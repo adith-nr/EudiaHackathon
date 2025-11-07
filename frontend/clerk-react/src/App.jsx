@@ -1,15 +1,97 @@
-import React from 'react'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+import { useEffect } from 'react'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { useAuth } from '@clerk/clerk-react'
+import DashboardPage from './pages/DashboardPage'
+import LoginPage from './pages/LoginPage'
+import ProductDetailsPage from './pages/ProductDetailsPage'
+import './App.css'
 
-export default function App() {
+const TokenSynchronizer = () => {
+  const { isLoaded, isSignedIn, getToken } = useAuth()
+
+  useEffect(() => {
+    if (!isLoaded) return
+    let active = true
+
+    const syncToken = async () => {
+      if (!isSignedIn) {
+        localStorage.removeItem('token')
+        return
+      }
+      const token = await getToken()
+      if (active) {
+        if (token) {
+          localStorage.setItem('token', token)
+        } else {
+          localStorage.removeItem('token')
+        }
+      }
+    }
+
+    syncToken()
+    const interval = setInterval(syncToken, 5 * 60 * 1000)
+
+    return () => {
+      active = false
+      clearInterval(interval)
+    }
+  }, [getToken, isLoaded, isSignedIn])
+
+  return null
+}
+
+const ProtectedRoute = () => {
+  const { isLoaded, isSignedIn } = useAuth()
+
+  if (!isLoaded) {
+    return (
+      <div className="page-layout">
+        <p>Checking session…</p>
+      </div>
+    )
+  }
+
+  if (!isSignedIn) {
+    return <Navigate to="/login" replace />
+  }
+
   return (
-    <header style={{ padding: "1rem", display: "flex", justifyContent: "flex-end", gap: "1rem" }}>
-      <SignedOut>
-        <SignInButton />
-      </SignedOut>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-    </header>
+    <>
+      <TokenSynchronizer />
+      <Outlet />
+    </>
   )
 }
+
+const PublicOnlyRoute = () => {
+  const { isLoaded, isSignedIn } = useAuth()
+
+  if (!isLoaded) {
+    return (
+      <div className="auth-layout">
+        <p>Loading…</p>
+      </div>
+    )
+  }
+
+  return isSignedIn ? <Navigate to="/dashboard" replace /> : <Outlet />
+}
+
+const AppRoutes = () => (
+  <Routes>
+    <Route element={<PublicOnlyRoute />}>
+      <Route path="/login" element={<LoginPage />} />
+    </Route>
+
+    <Route element={<ProtectedRoute />}>
+      <Route path="/dashboard" element={<DashboardPage />} />
+      <Route path="/product/:id" element={<ProductDetailsPage />} />
+    </Route>
+
+    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+  </Routes>
+)
+
+const App = () => <AppRoutes />
+
+export default App
