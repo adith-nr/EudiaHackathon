@@ -64,17 +64,36 @@ const DashboardPage = () => {
       setSubmitting(false)
     }
   }
-
   const parsedProducts = useMemo(() => {
-    return products.map((product) => ({
+  return products.map((product) => {
+    const variants = product.variants ?? [];
+
+    // compute average price if variants exist
+    let avgPrice = null;
+    if (variants.length > 0) {
+      const numericPrices = variants
+        .map(v => parseFloat(v.price))
+        .filter(p => !isNaN(p));
+      if (numericPrices.length > 0) {
+        avgPrice =
+          numericPrices.reduce((sum, p) => sum + p, 0) / numericPrices.length;
+      }
+    }
+
+    return {
       id: product.id ?? product._id ?? product.productId ?? product?.metricsId,
       title: product.title ?? product.name ?? 'Untitled',
-      price: product.price ?? product.priceUsd ?? '—',
+      price:
+        avgPrice !== null
+          ? `$${avgPrice.toFixed(2)}`
+          : product.price ?? product.priceUsd ?? '—',
       status: product.status ?? product.state ?? 'Unknown',
       sales: product.sales ?? product.metrics?.sales ?? 0,
-      revenue: product.revenue ?? product.metrics?.revenue ?? 0
-    }))
-  }, [products])
+      revenue: product.revenue ?? product.metrics?.revenue ?? 0,
+    };
+  });
+}, [products]);
+
 
   const handleLogout = async () => {
     localStorage.removeItem('token')
