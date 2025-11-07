@@ -3,12 +3,15 @@ import {
   listProducts,
   syncInventory,
   createPriceExperiment,
+  createProduct,
+  UpdateInventory,
+  getOrderData
 } from '../controllers/shopify.controller.js';
 
 const router = Router();
 
-router.get('/products', listProducts);
-router.post('/inventory/sync', syncInventory);
-router.post('/pricing/experiments', createPriceExperiment);
+router.get('/createProduct', createProduct);
+router.post('/inventory',UpdateInventory);
+router.post('/order',getOrderData );
 
 export default router;
