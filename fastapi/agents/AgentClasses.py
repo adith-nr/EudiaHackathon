@@ -9,10 +9,9 @@ import google.generativeai as genai
 
 
 test_data = ''
-
 #api call should  me made here to fetch similiar products detail in here 
-with open('test_pricing_data.json', "r") as file:
-    test_data = json.load(file) 
+# with open('test_pricing_data.json', "r") as file:
+#     test_data = json.load(file) 
 
 class PricingAgent:
     def __init__(self, serpapi_key: str = None, gemini_api_key: str = None):

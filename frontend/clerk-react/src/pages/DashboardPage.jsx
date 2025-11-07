@@ -26,7 +26,7 @@ const DashboardPage = () => {
     setListLoading(true)
     setListError('')
     try {
-      const { data } = await api.get('/products')
+      const { data } = await api.get('/shopify/products')
       setProducts(Array.isArray(data) ? data : data?.products ?? [])
     } catch (err) {
       setListError('Could not load products')
@@ -50,7 +50,7 @@ const DashboardPage = () => {
     setFormMessage('')
     setFormError('')
     try {
-      await api.post('/products/analyze-list', {
+      await api.post('/products_analyze', {
         name: form.name,
         description: form.description,
         minPrice: Number(form.minPrice),
