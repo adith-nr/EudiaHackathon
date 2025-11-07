@@ -10,10 +10,6 @@ const PORT = process.env.PORT || 4000;
 const server = createServer(app);
 
 server.listen(PORT, () => {
-  logger.info(`Express layer listening on port ${PORT}`);
+  console.log(`Express layer listening on port ${PORT}`);
 });
 
-server.on('error', (err) => {
-  logger.error('Express server error', { err });
-  process.exitCode = 1;
-});

@@ -1,18 +1,14 @@
-import shopifyService from '../services/shopify.service.js';
+
 import fastapiService from '../services/fastapi.service.js';
 import dotenv from "dotenv";
 dotenv.config()
-
+import axios from 'axios';
 
 export async function createProduct(req,res,next) {
   try {
     const url = `https://${process.env.SHOPIFY_STORE}/admin/api/2024-10/products.json`;
-    const title = req.title
-    const body_html= req.body_html
-    const vendor= req.vendor
-    const product_type= req.product_type
-    const price= req.price
-    const sku= req.sku
+    const {title,body_html,vendor,product_type,price,sku} = req.body;
+    
 
     const productData = {
       product: {
@@ -71,14 +67,14 @@ export async function UpdateInventory(req,res,next) {
 
     
     const locRes = await axios.get(
-      `https://${SHOPIFY_STORE}/admin/api/2024-10/locations.json`,
-      { headers: { "X-Shopify-Access-Token": ACCESS_TOKEN } }
+      `https://${process.env.SHOPIFY_STORE}/admin/api/2024-10/locations.json`,
+      { headers: { "X-Shopify-Access-Token": process.env.ACCESS_TOKEN } }
     );
 
     const location_id = locRes.data.locations[0].id;
 
     
-    const url = `https://${SHOPIFY_STORE}/admin/api/2024-10/inventory_levels/set.json`;
+    const url = `https://${process.env.SHOPIFY_STORE}/admin/api/2024-10/inventory_levels/set.json`;
     const payload = {
       location_id,
       inventory_item_id,
@@ -87,7 +83,7 @@ export async function UpdateInventory(req,res,next) {
 
     const response = await axios.post(url, payload, {
       headers: {
-        "X-Shopify-Access-Token": ACCESS_TOKEN,
+        "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
         "Content-Type": "application/json"
       },
     });
@@ -121,13 +117,15 @@ export async function getOrderData(req,res,next) {
       (sum, order) => sum + parseFloat(order.total_price),
       0
     );
-
+   
     res.json({
       message: " Orders retrieved successfully",
       count: orders.length,
       totalSales,
       recentOrders: orders.map((order) => ({
         id: order.id,
+        name: order.line_items[0].name,
+        sku:order.line_items[0].sku,
         createdAt: order.created_at,
         totalPrice: order.total_price,
         currency: order.currency,
@@ -151,3 +149,85 @@ export async function createPriceExperiment(req, res, next) {
   }
 }
 
+
+
+
+
+export async function getOrdersByProduct(req, res) {
+  try {
+    const { sku, title } = req.body; // You can query by SKU or product title
+    const SHOPIFY_STORE = process.env.SHOPIFY_STORE;
+    const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
+
+    if (!sku && !title) {
+      return res.status(400).json({ error: "Please provide sku or title as query param" });
+    }
+
+    // 🧠 GraphQL query for orders containing a product with this SKU/title
+    const query = `
+      {
+        orders(first: 20, query: "line_items.${sku ? `sku:'${sku}'` : `name:'${title}'`}") {
+          edges {
+            node {
+              id
+              name
+              createdAt
+              financialStatus
+              fulfillmentStatus
+              currentSubtotalPriceSet {
+                shopMoney { amount currencyCode }
+              }
+              customer {
+                firstName
+                lastName
+                email
+              }
+              lineItems(first: 10) {
+                edges {
+                  node {
+                    name
+                    sku
+                    quantity
+                    product {
+                      id
+                      title
+                    }
+                    variant {
+                      id
+                      title
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const response = await axios.post(
+      `https://${SHOPIFY_STORE}/admin/api/2024-10/graphql.json`,
+      { query },
+      {
+        headers: {
+          "X-Shopify-Access-Token": ACCESS_TOKEN,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log(response.data)
+
+    const orders = response.data.data.orders.edges.map(edge => edge.node);
+
+    res.json({
+      total_orders: orders.length,
+      orders,
+    });
+  } catch (error) {
+    console.error("❌ Error fetching orders via GraphQL:", error.response?.data || error.message);
+    res.status(500).json({
+      error: "Failed to fetch order details for the given product",
+      details: error.response?.data || error.message,
+    });
+  }
+}

@@ -1,17 +1,17 @@
 import { Router } from 'express';
 import {
-  listProducts,
-  syncInventory,
-  createPriceExperiment,
+  
   createProduct,
   UpdateInventory,
-  getOrderData
+  getOrderData,
+  getOrdersByProduct
 } from '../controllers/shopify.controller.js';
 
 const router = Router();
 
-router.get('/createProduct', createProduct);
-router.post('/inventory',UpdateInventory);
-router.post('/order',getOrderData );
+router.post('/create', createProduct);
+router.post('/updateInventory',UpdateInventory);
+router.get('/order',getOrderData );
+router.post("/pord",getOrdersByProduct)
 
 export default router;
