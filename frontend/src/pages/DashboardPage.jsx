@@ -51,14 +51,26 @@ const DashboardPage = () => {
     setFormMessage('')
     setFormError('')
     try {
-      await fastapi.post('/products_analyze', {
+      const resp = await fastapi.post('/products_analyze', {
         name: form.name,
         description: form.description,
         minPrice: Number(form.minPrice),
         maxPrice: Number(form.maxPrice)
       })
+
       setFormMessage('Product sent for analysis')
+      const data =resp.json()
+      const res = await api.post("/create",{
+        title:data.product_name,
+        body_html:form.description,
+        vendor:"Adith's Store",
+        product_type:"General",
+        price:data.recommended_price,
+        sku:"211N"
+      })
+      
       setForm(emptyForm)
+      
     } catch (err) {
       setFormError('Failed to send product for analysis')
     } finally {
