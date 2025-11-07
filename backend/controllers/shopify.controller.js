@@ -231,3 +231,31 @@ export async function getOrdersByProduct(req, res) {
     });
   }
 }
+
+
+export async function getProducts(req,res) {
+  try {
+    const url = `https://${process.env.SHOPIFY_STORE}/admin/api/2024-10/products.json`
+    const response = await axios.get(url, {
+      headers: {
+        "X-Shopify-Access-Token": process.env.ACCESS_TOKEN,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const products = response.data.products;
+
+    res.json({
+      message: " Products retrieved successfully",
+      count: products.length,
+      products: products.map((product) => ({
+        id: product.id,
+        title: product.title,
+        createdAt: product.created_at,
+        variants: product.variants,
+      })),
+    });
+  } catch (error) {
+    
+  }
+}
