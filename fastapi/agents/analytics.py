@@ -45,7 +45,8 @@ def get_products(limit: int = 10):
         shopify_domain = f"{SHOPIFY_STORE}.myshopify.com"
     
     url = f"https://{shopify_domain}/admin/api/{API_VERSION}/.json"
-    url2 = f"https://{shopify_domain}/admin/api/{API_VERSION}/products.json"
+    url2 = f"https://{shopify_domain}/admin/api/{API_VERSION}/orders.json"
+
 
     headers = {
         "X-Shopify-Access-Token": SHOPIFY_TOKEN,

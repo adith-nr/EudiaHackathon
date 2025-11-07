@@ -27,6 +27,7 @@ const DashboardPage = () => {
     setListError('')
     try {
       const { data } = await api.get('/shopify/products')
+      console.log(data)
       setProducts(Array.isArray(data) ? data : data?.products ?? [])
     } catch (err) {
       setListError('Could not load products')
