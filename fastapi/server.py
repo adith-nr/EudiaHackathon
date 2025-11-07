@@ -3,12 +3,21 @@ import requests
 import os
 from typing import List, Dict, Any
 from dotenv import load_dotenv
-
+from pydantic import BaseModel
 from agents.AgentClasses import *
 
 from agents.utils import clean_data
-import cors
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],       # or ["http://localhost:5173"] for React
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 load_dotenv()
 
@@ -25,18 +34,22 @@ async def startup_event():
     print(f"\n🚀 FastAPI server running at: http://{host}:{port}")
     print(f"🛍️  Shopify store: {SHOPIFY_STORE or 'Not set'}\n")
 
-@app.get("/products_analyze")
-def products_analyze(responce):
-    # agent = PricingAgent()
-    product_name = "Diwali Lights String Lights 20 Meters"
-    price_range = {"min": 900, "max": 1500}
+class ProductInput(BaseModel):
+    name: str
+    description: str
+    minPrice: float
+    maxPrice: float
 
-    print(responce)
-    
-    # recommended_price = agent.get_recommended_price(product_name, price_range)
+@app.post("/products_analyze")
+async def products_analyze(data: ProductInput):
+    print("📦 Received:", data.dict())
+    avg_price = (data.minPrice + data.maxPrice) / 2
+    agent=PricingAgent()
+    recommended_price = agent.get_recommended_price(data.name, {"min":data.minPrice,"max":data.maxPrice})
+    print(recommended_price)
 
-    # if recommended_price:
-    #     print("💰 Final price to use for listing:", recommended_price)
-    #     # 🔧 Next: call your Express `/create-listing` route here
-    # else:
-    #     print("❌ Failed to get a recommended price.")
+    return {
+        "message": "Product analyzed successfully",
+        "product_name": data.name,
+        "recommended_price": round(avg_price, 2),
+    }

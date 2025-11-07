@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import api from '../lib/api'
+import { api } from '../lib/api'
 
 const ProductDetailsPage = () => {
   const { id } = useParams()
