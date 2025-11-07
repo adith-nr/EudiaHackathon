@@ -14,6 +14,6 @@ router.post('/create', createProduct)
 router.post('/updateInventory',UpdateInventory)
 router.get('/order',getOrderData )
 router.post("/pord",getOrdersByProduct)
-router.get("getProducts",getProducts)
+router.get("/products",getProducts)
 
 export default router;

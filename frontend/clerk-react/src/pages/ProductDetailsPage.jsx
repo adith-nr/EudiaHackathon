@@ -14,7 +14,7 @@ const ProductDetailsPage = () => {
       setLoading(true)
       setError('')
       try {
-        const response = await api.get(`/products`)
+        const response = await api.get(`/shopify/products`)
         setData(response.data)
       } catch (err) {
         setError('Failed to load product metrics')
