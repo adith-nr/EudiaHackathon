@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useClerk } from '@clerk/clerk-react'
 import { useNavigate } from 'react-router-dom'
-import api from '../lib/api'
+import {api, fastapi} from '../lib/api'
 
 const emptyForm = {
   name: '',
@@ -50,7 +50,7 @@ const DashboardPage = () => {
     setFormMessage('')
     setFormError('')
     try {
-      await api.post('/products_analyze', {
+      await fastapi.post('/products_analyze', {
         name: form.name,
         description: form.description,
         minPrice: Number(form.minPrice),

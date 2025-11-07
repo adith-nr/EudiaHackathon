@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from agents.AgentClasses import *
 
 from agents.utils import clean_data
-
+import cors
 app = FastAPI()
 
 load_dotenv()
