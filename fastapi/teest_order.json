@@ -1,0 +1,16 @@
+{
+    "message": " Orders retrieved successfully",
+    "count": 1,
+    "totalSales": 49.99,
+    "recentOrders": [
+        {
+            "id": 6829922517306,
+            "name": "Smart Finance Dashboard - Standard",
+            "sku": "FIN-001",
+            "createdAt": "2025-11-06T15:16:24-05:00",
+            "totalPrice": "49.99",
+            "currency": "USD",
+            "customer": "Guest"
+        }
+    ]
+}
