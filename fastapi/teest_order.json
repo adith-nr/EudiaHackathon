@@ -1,8 +1,44 @@
 {
     "message": " Orders retrieved successfully",
-    "count": 1,
-    "totalSales": 49.99,
+    "count": 5,
+    "totalSales": 3340.7899999999995,
     "recentOrders": [
+        {
+            "id": 6831464120634,
+            "name": "The Collection Snowboard: Hydrogen",
+            "sku": null,
+            "createdAt": "2025-11-07T15:17:12-05:00",
+            "totalPrice": "610.10",
+            "currency": "USD",
+            "customer": "Guest"
+        },
+        {
+            "id": 6831460057402,
+            "name": "Smart Finance Dashboard - Standard",
+            "sku": "FIN-001",
+            "createdAt": "2025-11-07T15:14:18-05:00",
+            "totalPrice": "50.75",
+            "currency": "USD",
+            "customer": "Guest"
+        },
+        {
+            "id": 6831456616762,
+            "name": "The 3p Fulfilled Snowboard",
+            "sku": "sku-hosted-1",
+            "createdAt": "2025-11-07T15:11:58-05:00",
+            "totalPrice": "2629.95",
+            "currency": "USD",
+            "customer": "Guest"
+        },
+        {
+            "id": 6831455600954,
+            "name": "Havells fan - Standard",
+            "sku": "123",
+            "createdAt": "2025-11-07T15:11:09-05:00",
+            "totalPrice": "0.00",
+            "currency": "USD",
+            "customer": "Guest"
+        },
         {
             "id": 6829922517306,
             "name": "Smart Finance Dashboard - Standard",
