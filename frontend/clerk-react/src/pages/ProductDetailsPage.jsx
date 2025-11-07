@@ -14,7 +14,7 @@ const ProductDetailsPage = () => {
       setLoading(true)
       setError('')
       try {
-        const response = await api.get(`/products/${id}/metrics`)
+        const response = await api.get(`/products`)
         setData(response.data)
       } catch (err) {
         setError('Failed to load product metrics')
@@ -24,7 +24,7 @@ const ProductDetailsPage = () => {
     }
 
     fetchMetrics()
-  }, [id])
+  }, [])
 
   const metrics = useMemo(() => {
     const sales = data?.sales ?? data?.metrics?.sales ?? 0

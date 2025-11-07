@@ -68,9 +68,9 @@ def get_products(limit: int = 10):
         ]
 
             
-        res_data = clean_data(products)
+        # res_data = clean_data(products)
 
-        return {"count": len(res_data), "data": res_data}
+        # return {"count": len(products), "data": res_data}
 
     except requests.exceptions.RequestException as e:
         print("Error: ", e)
