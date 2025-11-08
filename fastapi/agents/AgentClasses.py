@@ -758,6 +758,7 @@ class PricingAgent:
                 return None
 
             recommendations = result.get("recommendations", {})
+            reasoning = result.get("reasoning",{})
             recommended_price = recommendations.get("recommended_price")
 
             if not recommended_price:
@@ -765,4 +766,4 @@ class PricingAgent:
                 return None
 
             print(f"✅ Recommended price for '{product_name}': ₹{recommended_price}")
-            return recommended_price
+            return {recommended_price,reasoning}

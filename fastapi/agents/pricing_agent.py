@@ -17,8 +17,9 @@ if __name__ == "__main__":
     product_name = "Diwali Lights String Lights 20 Meters"
     price_range = {"min": 900, "max": 1500}
     
-    recommended_price = agent.get_recommended_price(product_name, price_range)
-
+    data = agent.get_recommended_price(product_name, price_range)
+    recommended_price=data.get("recommended_price")
+    reasoning=data.get("reasoning")
     if recommended_price:
         print("💰 Final price to use for listing:", recommended_price)
         # 🔧 Next: call your Express `/create-listing` route here

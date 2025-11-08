@@ -46,11 +46,14 @@ async def products_analyze(data: ProductInput):
     productName = data.name
     avg_price = (data.minPrice + data.maxPrice) / 2
     agent=PricingAgent()
-    recommended_price = agent.get_recommended_price(data.name, {"min":data.minPrice,"max":data.maxPrice})
+    data =  agent.get_recommended_price(data.name, {"min":data.minPrice,"max":data.maxPrice})
+    recommended_price=data.get("recommended_price")
+    reasoning=data.get("reasoning")
     print(recommended_price)  
 
     return {
         "message": "Product analyzed successfully",
         "product_name": data.name,
         "recommended_price": recommended_price,
+        "reasoning": reasoning
     }
