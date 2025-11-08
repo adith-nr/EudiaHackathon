@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useClerk } from '@clerk/clerk-react'
-import { useNavigate } from 'react-router-dom'
+import { useAsyncError, useNavigate } from 'react-router-dom'
 import {api, fastapi} from '../lib/api'
 
 const emptyForm = {
-  name: '',
-  description: '',
-  minPrice: '',
-  maxPrice: ''
+  name: 'diwali lights',
+  description: 'hjhadvjkhadj',
+  minPrice: '100',
+  maxPrice: '1000'
 }
 
 const DashboardPage = () => {
@@ -17,7 +17,7 @@ const DashboardPage = () => {
   const [formMessage, setFormMessage] = useState('')
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
-
+  const [reasoning, setReasoning] = useState('')
   const [products, setProducts] = useState([])
   const [listLoading, setListLoading] = useState(true)
   const [listError, setListError] = useState('')
@@ -27,6 +27,7 @@ const DashboardPage = () => {
     setListError('')
     try {
       const { data } = await api.get('/shopify/products')
+      console.log(data)
       setProducts(Array.isArray(data) ? data : data?.products ?? [])
     } catch (err) {
       setListError('Could not load products')
@@ -50,14 +51,49 @@ const DashboardPage = () => {
     setFormMessage('')
     setFormError('')
     try {
-      await fastapi.post('/products_analyze', {
+      const resp = await fastapi.post('/products_analyze', {
         name: form.name,
         description: form.description,
         minPrice: Number(form.minPrice),
         maxPrice: Number(form.maxPrice)
       })
+
       setFormMessage('Product sent for analysis')
+      const data = resp.data
+
+      console.log("Recent data: ", data)
+      console.log("Reasoning: ", data.reasoning)
+
+      setReasoning(data.reasoning)
+
+
+      alert(reasoning)
+
+      
+
+      console.log('FOrwarded data ', {
+        title:data.product_name,
+        body_html:form.description,
+        vendor:"Adith's Store",
+        product_type:"General",
+        price:data.recommended_price,
+        sku:"211N"
+      })
+
+      const res = await api.post("/shopify/create",{
+        title:data.product_name,
+        body_html:form.description,
+        vendor:"Adith's Store",
+        product_type:"General",
+        price:data.recommended_price,
+        sku:"211N"
+      })
+
+      console.log(res.data)
+
+      
       setForm(emptyForm)
+      
     } catch (err) {
       setFormError('Failed to send product for analysis')
     } finally {

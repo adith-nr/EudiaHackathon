@@ -605,6 +605,8 @@ class PricingAgent:
         recommendation["market_data"] = market_data
         recommendation["llm_powered"] = True
         recommendation["llm_model"] = "gemini-2.0-flash-exp"
+
+        # print("Recommendations in generate", recommendation)
         
         return recommendation
     
@@ -676,11 +678,11 @@ class PricingAgent:
     ) -> Dict[str, Any]:
         
         #Scrape competitor products
-        products = self.scrape_amazon_products(
-            product_name, 
-            max_results=max_competitors
-        )
-        # products = test_data
+        # products = self.scrape_amazon_products(
+        #     product_name, 
+        #     max_results=max_competitors
+        # )
+        products = test_data
         
         if not products:
             return {
@@ -724,7 +726,7 @@ class PricingAgent:
                 "market_analysis": market_data,
                 "competitor_products": products[:5]
             }
-        
+        # print("recommetndations in run_pricing", recommendations)
         result = {
             "status": "success",
             "product_name": product_name,
@@ -753,11 +755,15 @@ class PricingAgent:
                 max_competitors=max_competitors
             )
 
+            # print("Results in get_recomment", result['recommendations']['reasoning'])
+            
             if result.get("status") != "success":
                 print(f"❌ Pricing analysis failed: {result.get('message')}")
                 return None
 
             recommendations = result.get("recommendations", {})
+            reasoning =result['recommendations']['reasoning'] 
+            print(reasoning)
             recommended_price = recommendations.get("recommended_price")
 
             if not recommended_price:
@@ -765,4 +771,4 @@ class PricingAgent:
                 return None
 
             print(f"✅ Recommended price for '{product_name}': ₹{recommended_price}")
-            return recommended_price
+            return {'recommended_price' : recommended_price,'reasoning' : reasoning}

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 import requests
 import os
 from typing import List, Dict, Any
@@ -41,16 +41,20 @@ class ProductInput(BaseModel):
     maxPrice: float
 
 @app.post("/products_analyze")
-async def products_analyze(data: ProductInput):
-    print("📦 Received:", data.dict())
-    productName = data.name
-    avg_price = (data.minPrice + data.maxPrice) / 2
+async def products_analyze(res: ProductInput):
+    print("📦 Received:", res.dict())
+    productName = res.name
+    # avg_price = (res.minPrice + data.maxPrice) / 2
     agent=PricingAgent()
-    recommended_price = agent.get_recommended_price(data.name, {"min":data.minPrice,"max":data.maxPrice})
-    print(recommended_price)
+    data =  agent.get_recommended_price(res.name, {"min":res.minPrice,"max":res.maxPrice})
+    
+    recommended_price=data.get("recommended_price")
+    reasoning=data.get("reasoning")
+    print(recommended_price)  
 
     return {
         "message": "Product analyzed successfully",
-        "product_name": data.name,
-        "recommended_price": round(avg_price, 2),
+        "product_name": res.name,
+        "recommended_price": recommended_price,
+        "reasoning": reasoning
     }

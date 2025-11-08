@@ -6,6 +6,9 @@ import axios from 'axios';
 
 export async function createProduct(req,res,next) {
   try {
+
+    console.log("Entered the api : ", req.body)
+
     const url = `https://${process.env.SHOPIFY_STORE}/admin/api/2024-10/products.json`;
     const {title,body_html,vendor,product_type,price,sku} = req.body;
     
