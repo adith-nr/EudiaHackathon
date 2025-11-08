@@ -1,2 +1,15 @@
 .env
 /node_modules
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+output.json
+.vscode/
+.idea/
