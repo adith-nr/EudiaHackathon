@@ -52,5 +52,5 @@ async def products_analyze(data: ProductInput):
     return {
         "message": "Product analyzed successfully",
         "product_name": data.name,
-        "recommended_price": round(avg_price, 2),
+        "recommended_price": recommended_price,
     }

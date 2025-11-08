@@ -59,8 +59,10 @@ const DashboardPage = () => {
       })
 
       setFormMessage('Product sent for analysis')
-      const data =resp.json()
-      const res = await api.post("/create",{
+      const data = resp.data
+      console.log("Recent data: ", data)
+
+      console.log('FOrwarded data ', {
         title:data.product_name,
         body_html:form.description,
         vendor:"Adith's Store",
@@ -68,6 +70,18 @@ const DashboardPage = () => {
         price:data.recommended_price,
         sku:"211N"
       })
+      
+      const res = await api.post("/shopify/create",{
+        title:data.product_name,
+        body_html:form.description,
+        vendor:"Adith's Store",
+        product_type:"General",
+        price:data.recommended_price,
+        sku:"211N"
+      })
+
+      console.log(res.data)
+
       
       setForm(emptyForm)
       
