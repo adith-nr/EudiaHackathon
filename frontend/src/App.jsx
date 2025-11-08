@@ -4,6 +4,7 @@ import { useAuth } from '@clerk/clerk-react'
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
 import ProductDetailsPage from './pages/ProductDetailsPage'
+import ProductAnalytics from './pages/ProductAnalytics'
 import './App.css'
 
 const TokenSynchronizer = () => {
@@ -86,6 +87,7 @@ const AppRoutes = () => (
     <Route element={<ProtectedRoute />}>
       <Route path="/dashboard" element={<DashboardPage />} />
       <Route path="/product/:id" element={<ProductDetailsPage />} />
+      <Route path="/product/:id/analytics" element={<ProductAnalytics />} />
     </Route>
 
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

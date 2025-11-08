@@ -678,11 +678,11 @@ class PricingAgent:
     ) -> Dict[str, Any]:
         
         #Scrape competitor products
-        # products = self.scrape_amazon_products(
-        #     product_name, 
-        #     max_results=max_competitors
-        # )
-        products = test_data
+        products = self.scrape_amazon_products(
+            product_name, 
+            max_results=max_competitors
+        )
+        # products = test_data
         
         if not products:
             return {
