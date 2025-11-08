@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useClerk } from '@clerk/clerk-react'
-import { useNavigate } from 'react-router-dom'
+import { useAsyncError, useNavigate } from 'react-router-dom'
 import {api, fastapi} from '../lib/api'
 
 const emptyForm = {
-  name: '',
-  description: '',
-  minPrice: '',
-  maxPrice: ''
+  name: 'diwali lights',
+  description: 'hjhadvjkhadj',
+  minPrice: '100',
+  maxPrice: '1000'
 }
 
 const DashboardPage = () => {
@@ -17,7 +17,7 @@ const DashboardPage = () => {
   const [formMessage, setFormMessage] = useState('')
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
-
+  const [reasoning, setReasoning] = useState('')
   const [products, setProducts] = useState([])
   const [listLoading, setListLoading] = useState(true)
   const [listError, setListError] = useState('')
@@ -60,7 +60,16 @@ const DashboardPage = () => {
 
       setFormMessage('Product sent for analysis')
       const data = resp.data
+
       console.log("Recent data: ", data)
+      console.log("Reasoning: ", data.reasoning)
+
+      setReasoning(data.reasoning)
+
+
+      alert(reasoning)
+
+      
 
       console.log('FOrwarded data ', {
         title:data.product_name,
@@ -70,7 +79,7 @@ const DashboardPage = () => {
         price:data.recommended_price,
         sku:"211N"
       })
-      
+
       const res = await api.post("/shopify/create",{
         title:data.product_name,
         body_html:form.description,
